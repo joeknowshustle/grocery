@@ -1,58 +1,74 @@
 import sys
+import json
+
+itemTypes = ["", "Fruit", "Vegetable", "Grain"]
 
 store_items = {
-
-        "Apples": .5,
+    "Apples": .5,
     "banana's": .99,
     "oranges": .99,
     "Wheat": 2.00
-    }
+}
+store_items2 = {
+    "items": [
+        {
+            "Name": "Apples",
+            "Cost": .5,
+            "Qty": 10,
+            "Type": itemTypes[1]
+        },
+        {
+            "Name": "Banana",
+            "Cost": .99,
+            "Qty": 10,
+            "Type": itemTypes[1]
+        },
+        {
+            "Name": "Oranges",
+            "Cost": .99,
+            "Qty": 10,
+            "Type": itemTypes[1]
+        },
+        {
+            "Name": "Wheat",
+            "Cost": 2.00,
+            "Qty": 10,
+            "Type": itemTypes[3]
+        }
 
+    ]
+}
+shopping_Cart = {
+    "items": [
 
+    ]
+}
 
 
 def display_items():
     for key in store_items:
         print(key, ' : ', store_items[key])
-    active = True
-    while active:
-        input1 = input("press 'r' to return to the main menu else press enter to exit \n")
-        if input1 == 'r':
-            menu_system()
-        elif input1 == '':
-            sys.exit(0)
-        else:
-            print("\ninvalid input")
-            continue
 
 
 def price_check():
     active = True
     while active:
-        item_input = input("\nenter Item to find price press ENTER to return to menu ")
+        item_input = input(
+            "\nEnter Item to find price press ENTER to return to menu.")
         if item_input in store_items:
             print(store_items[item_input])
         elif item_input == '':
             active = False
-            menu_system()
-
-            sel_input = input("would you like to make another selection?(y/n) ")
-
-            if sel_input == 'y':
-                continue
-            elif sel_input == 'n':
-                active = False
-                menu_system()
         else:
             print("\nitem not found")
-            continue
+
 
 def check_out():
     checkout_items = []
     running = True
     while running:
         item_total = input("Enter Item name (Press ENTER to checkout):  ")
-        if item_total =='':
+        if item_total == '':
             running = False
         item_quantity = input("\nenter quantity")
         item_quantity = int(item_quantity)
@@ -63,122 +79,123 @@ def check_out():
             check_out_total = f"Total: {sum(checkout_items)* item_quantity}"
             print(check_out_total)
 
-
         else:
             print("Item not found")
 
 
+def change_prices():
+    running = True
+    while running:
+        dict_key = input(
+            'Enter item name of price to change: or Enter to return to menu. ')
+        if dict_key in store_items:
+            print(store_items[f"{dict_key}"])
+            new_price = float(input("enter new price: "))
+            store_items[f"{dict_key}"] = new_price
+            print(f"\n{store_items}")
+            price_change_choice = input(
+                "would you like to make another price change?(y/n)").capitalize
+            if price_change_choice == 'N':
+                running = False
+        else:
+            print("invalid choice")
 
-def management_options():
-    print("\n1)change prices")
-    print("2) add/del store items")
-    print("3 exit to main menu")
 
+def del_Items():
+    running = True
+    while running:
+       # key = input("Enter store Item: press enter to return to menu ")
+        name = input("Enter the name ")
+        for item in store_items2["items"]:
+            if(item["Name"] == name):
+                item["Qty"] = 0
+                print("Successfully Deleted Item  " + name)
+                return
+        store_items2["items"] = newItem
+        print("Unable to find the item " + name)
+        more_items = input(
+            "is there any more items to remove? (y/n)").capitalize()
+        if(more_items == "N"):
+            running = False
+
+
+def add_Items_toStore():
+    running = True
+    while running:
+       # key = input("Enter store Item: press enter to return to menu ")
+        name = input("Enter the name ")
+        cost = float(input("Enter Price "))
+        qty = float(input("Enter qty "))
+        type = itemTypes[float(
+            input("Enter Type (1) fruit (2) vege (3) grain. "))]
+        while not(type == 1 or type == 2 or type == 3):
+            type = float(input("Enter Type (1) fruit (2) vege (3) grain."))
+        newItem = {
+            "Name": name,
+            "Cost": cost,
+            "Qty": qty,
+            "Type": type
+        }
+        for item in store_items2["items"]:
+            if(item["Name"] == name):
+                item["Cost"] = cost
+                item["Qty"] = qty
+                item["Type"] = type
+                print("Successfully updated " + name)
+                return
+        store_items2["items"] = newItem
+        print("Successfully Added the item " + name)
+        more_items = input(
+            "is there any more items to add? (y/n)").capitalize()
+        if(more_items == "N"):
+            running = False
+
+
+def management_options(man_selct):
     active = True
     while active:
-        man_selct = input("Make a selection from the following options\n ")
         if man_selct == '1':
-            active = False
-
-            def change_prices():
-                running = True
-                while running:
-                    dict_key = input('Enter item name of price to change: or Enter to return to menu. ')
-                    if dict_key == '':
-                        running = False
-                        management_options()
-
-                    if dict_key in store_items:
-                    # print(store_items[f"{dict_key}"])
-                        new_price = input("enter new price: ")
-                        new_price = float(new_price)
-                        store_items[f"{dict_key}"] = new_price
-                        print(f"\n{store_items}")
-                        price_change_choice = input("would you like to make another price change?(y/n)")
-                        if price_change_choice == 'y':
-                            continue
-                        elif price_change_choice =='n':
-                            running = False
-                            management_options()
-                else:
-                    print("invalid choice")
-
-                    management_options()
-
-
-
-
             change_prices()
         elif man_selct == '2':
-            active = False
-
-            def add_del_items():
-                running = True
-                while running:
-                    key = input("Enter store Item: press enter to return to menu ")
-                    if key == '':
-                        running = False
-                        management_options()
-                    try:
-                        value = input("Enter Price")
-
-                        value = float(value)
-                    except:
-                        print("invalid input")
-                        continue
-                    store_items[key] = value
-                    print(store_items)
-                    more_items = input("is there any more items to add? (y/n)")
-                    if more_items == 'y':
-                        continue
-
-                    else:
-                        running = False
-                        management_options()
-
-                    # int(value)
-                    # store_items.update()
-
-            add_del_items()
+            add_Items_toStore()
         elif man_selct == '3':
+            del_Items()
+        elif man_selct == '4':
             active = False
-            menu_system()
         else:
-            print("invalid option try again")
-            continue
+            print("Invalid option try again")
 
 
-def menu_system():
-    print("\nPlease make a selection from the following choices:")
-    print("1) Display Items")
-    print("2) price check")
-    print("3) Management options")
-    print("4)checkout")
+if __name__ == "__main__":
+    print(store_items2)
     active = True
     while active:
-        selection_input = input("make selection press ENTER to exit\n")
+        print("\nPlease make a selection from the following choices:")
+        print("1) Display Items")
+        print("2) Price Check")
+        print("3) Management Options")
+        print("4) Checkout")
+        print("Q) Quit")
+        selection_input = input(
+            "make selection press ENTER to exit\n").capitalize()
         if selection_input == '1':
-            active = False
             display_items()
-
         elif selection_input == '2':
-            active = False
             price_check()
-
-
         elif selection_input == '3':
-            active = False
-            management_options()
-        elif selection_input =='4':
+            print("\n1)  prices")
+            print("2) Add/Update store items.")
+            print("3 Delete store items.")
+            print("4 Quit.")
+            man_selct = input(
+                "Make a selection from the following options\n ")
+            management_options(man_selct)
+        elif selection_input == '4':
             check_out()
         elif selection_input == '':
-            active = False
+            break
+        elif selection_input == 'Q' or'':
             break
         else:
             print("invalid option Try again")
-            continue
 
-
-menu_system()
-
-menu_system()
